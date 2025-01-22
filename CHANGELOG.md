@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.5.0] - 2023-11-10
+
+### Changed
+- If a contact point already exits it will be updated. Previous behaviour was to only to create which failed for existing contact points.
+
+
+# [1.4.2] - 2023-11-01
+
+### Added
+- enable aws s3 role assumption (use default providers chain) by @DerekTBrown in #245
+
+### Changed
+- chore: organize s3 utils by @DerekTBrown in #245
+
+### Removed
+
+# [1.4.1] - 2023-09-21
+
+### Added
+
+### Changed
+- add missing argument http_get_headers #242 #243
+
+### Removed
+
+# [1.4.0] - 2023-09-20
+
+### Added
+- add contact points and notifcation policy backup functionalities by @ysde in #238
+- added http headers to get_grafana_version request by @Mar8x in #239 
+
+### Changed
+- added py3-packaging to slim docker image, reported by @tasiotas in #241 :tada:
+
+### Removed
+
 # [1.3.3] - 2023-07-27
 
 ### Added
