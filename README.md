@@ -179,6 +179,7 @@ docker run --user $(id -u):$(id -g) --rm --name grafana-backup-tool \
 		   -e GOOGLE_APPLICATION_CREDENTIALS="credential-file-path"
 ```
 
+TODO: exit code must be non-zero when API Key is invalide
 
 ### Restore
 
