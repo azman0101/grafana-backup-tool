@@ -100,20 +100,10 @@ def main(args, settings):
     # There are some issues of notification policy restore api, it will lock the notification policy page and cannot be edited.
     # restore_functions['notification_policys'] = update_notification_policy
 
-    if sys.version_info >= (3,):
-        with tempfile.TemporaryDirectory() as tmpdir:
-            tar.extractall(tmpdir)
-            tar.close()
-            restore_components(args, settings, restore_functions, tmpdir)
-    else:
-        tmpdir = tempfile.mkdtemp()
+    with tempfile.TemporaryDirectory() as tmpdir:
         tar.extractall(tmpdir)
         tar.close()
         restore_components(args, settings, restore_functions, tmpdir)
-        try:
-            shutil.rmtree(tmpdir)
-        except OSError as e:
-            print("Error: %s : %s" % (tmpdir, e.strerror))
 
 
 def restore_components(args, settings, restore_functions, tmpdir):
@@ -126,26 +116,12 @@ def restore_components(args, settings, restore_functions, tmpdir):
         # but must also exist in extracted archive
         # NOTICE: ext[:-1] cuts the 's' off in order to match the file extension name to be restored...
         for ext in arg_components_list:
-            if sys.version_info >= (3,):
-                for file_path in glob('{0}/**/*.{1}'.format(tmpdir, ext[:-1]), recursive=True):
-                    print('restoring {0}: {1}'.format(ext, file_path))
-                    restore_functions[ext[:-1]](args, settings, file_path)
-            else:
-                for root, dirnames, filenames in os.walk('{0}'.format(tmpdir)):
-                    for filename in fnmatch.filter(filenames, '*.{0}'.format(ext[:-1])):
-                        file_path = os.path.join(root, filename)
-                        print('restoring {0}: {1}'.format(ext, file_path))
-                        restore_functions[ext[:-1]](args, settings, file_path)
+            for file_path in glob(f'{tmpdir}/**/*.{ext[:-1]}', recursive=True):
+                print(f'restoring {ext}: {file_path}')
+                restore_functions[ext[:-1]](args, settings, file_path)
     else:
         # Restore every component included in extracted archive
         for ext in restore_functions.keys():
-            if sys.version_info >= (3,):
-                for file_path in glob('{0}/**/*.{1}'.format(tmpdir, ext), recursive=True):
-                    print('restoring {0}: {1}'.format(ext, file_path))
-                    restore_functions[ext](args, settings, file_path)
-            else:
-                for root, dirnames, filenames in os.walk('{0}'.format(tmpdir)):
-                    for filename in fnmatch.filter(filenames, '*.{0}'.format(ext)):
-                        file_path = os.path.join(root, filename)
-                        print('restoring {0}: {1}'.format(ext, file_path))
-                        restore_functions[ext](args, settings, file_path)
+            for file_path in glob(f'{tmpdir}/**/*.{ext}', recursive=True):
+                print(f'restoring {ext}: {file_path}')
+                restore_functions[ext](args, settings, file_path)

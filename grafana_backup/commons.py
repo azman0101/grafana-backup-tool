@@ -17,13 +17,6 @@ def log_response(resp):
     return resp
 
 
-def to_python2_and_3_compatible_string(some_string):
-    if sys.version_info[0] > 2:
-        return some_string
-    else:
-        return some_string.encode('utf8')
-
-
 def load_config(path=None):
     config = None
 

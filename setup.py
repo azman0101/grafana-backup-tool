@@ -5,13 +5,13 @@ from setuptools import setup, find_packages
 name = PKG_NAME
 version = PKG_VERSION
 requires = [
-    'requests',
-    'docopt',
-    'boto3',
-    'azure-storage-blob',
-    'google-cloud-storage',
-    'influxdb',
-    'packaging'
+    'requests>=2.32,<3.0',
+    'docopt>=0.6,<1.0',
+    'boto3>=1.42,<2.0',
+    'azure-storage-blob>=12.28,<13.0',
+    'google-cloud-storage>=3.8,<4.0',
+    'influxdb>=5.3,<6.0',
+    'packaging>=25.0,<26.0'
 ]
 
 setup(
