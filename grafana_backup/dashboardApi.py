@@ -351,7 +351,7 @@ def get_folder_id(dashboard, grafana_url, http_post_headers, verify_ssl, client_
     try:
         folder_uid = dashboard['meta']['folderUid']
     except (KeyError):
-        matches = re.search('dashboards\/f\/(.*)\/.*',
+        matches = re.search(r'dashboards/f/(.*)/.*',
                             dashboard['meta']['folderUrl'])
         if matches is not None:
             folder_uid = matches.group(1)
