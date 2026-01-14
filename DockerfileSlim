@@ -23,6 +23,10 @@ ENV PACKAGES="\
     py3-six \
     py3-packaging \
 "
+
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 WORKDIR /opt/grafana-backup-tool
 ADD . /opt/grafana-backup-tool
 
@@ -32,6 +36,7 @@ RUN chmod -R a+r /opt/grafana-backup-tool \
 RUN echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
     && apk add --no-cache --virtual build-deps ${DEV_PACKAGES} \
     && apk add --no-cache ${PACKAGES} \
+    && python3 -m venv --system-site-packages $VIRTUAL_ENV \
     && pip3 --no-cache-dir install . \
     && chown -R ${UID}:${GID} /opt/grafana-backup-tool \
     && apk del build-deps
