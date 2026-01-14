@@ -13,15 +13,8 @@ def log_response(resp):
     try:
         print("[DEBUG] resp body: {0}".format(resp.json()))
     except ValueError:
-        print("[DEBUG] resp body: {0}".format(to_python2_and_3_compatible_string(resp.text)))
+        print("[DEBUG] resp body: {0}".format(resp.text))
     return resp
-
-
-def to_python2_and_3_compatible_string(some_string):
-    if sys.version_info[0] > 2:
-        return some_string
-    else:
-        return some_string.encode('utf8')
 
 
 def load_config(path=None):
