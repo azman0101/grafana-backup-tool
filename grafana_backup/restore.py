@@ -100,28 +100,31 @@ def main(args, settings):
     # There are some issues of notification policy restore api, it will lock the notification policy page and cannot be edited.
     # restore_functions['notification_policys'] = update_notification_policy
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tar.extractall(tmpdir)
-        tar.close()
-        restore_components(args, settings, restore_functions, tmpdir)
+    restore_components(args, settings, restore_functions, tar)
 
 
-def restore_components(args, settings, restore_functions, tmpdir):
+def restore_components(args, settings, restore_functions, tar):
     arg_components = args.get('--components', [])
-
     if arg_components:
         arg_components_list = arg_components.replace("-", "_").split(',')
-
-        # Restore only the components that provided via an argument
-        # but must also exist in extracted archive
-        # NOTICE: ext[:-1] cuts the 's' off in order to match the file extension name to be restored...
-        for ext in arg_components_list:
-            for file_path in glob(f'{tmpdir}/**/*.{ext[:-1]}', recursive=True):
-                print(f'restoring {ext}: {file_path}')
-                restore_functions[ext[:-1]](args, settings, file_path)
     else:
-        # Restore every component included in extracted archive
-        for ext in restore_functions.keys():
-            for file_path in glob(f'{tmpdir}/**/*.{ext}', recursive=True):
-                print(f'restoring {ext}: {file_path}')
-                restore_functions[ext](args, settings, file_path)
+        arg_components_list = restore_functions.keys()
+
+    for member in tar.getmembers():
+        if member.isfile():
+            # TODO: add some sort of --no-ssl-check, ideally this would be better
+            os.environ['PYTHONHTTPSVERIFY'] = "0"
+
+            file_path = member.name
+            fname, fext = file_path.split(os.extsep, 1)
+
+            if fext in arg_components_list:
+                print("restoring {0}: {1}".format(fext, file_path))
+                # create a temporary file to read the extracted member
+                with tempfile.NamedTemporaryFile(mode='w', delete=False) as tmp:
+                    # extract member to temporary file
+                    shutil.copyfileobj(tar.extractfile(member), tmp)
+                    # restore single file
+                    restore_functions[fext](args, settings, tmp.name)
+
+    tar.close()

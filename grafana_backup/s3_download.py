@@ -1,7 +1,5 @@
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
-from io import BytesIO
-
 from grafana_backup.s3_common import get_s3_object
 
 
@@ -12,9 +10,7 @@ def main(args, settings):
     s3_object = get_s3_object(settings, s3_file_name=arg_archive_file)
 
     try:
-        # .read() left off on purpose, tarfile.open() takes care of that part
-        s3_data_raw = s3_object.get()["Body"]
-        s3_data = BytesIO(s3_data_raw.read())
+        s3_data = s3_object.get()["Body"]
         print("Download from S3 was successful")
     except ClientError as e:
         if e.response["Error"]["Code"] == "NoSuchKey":
