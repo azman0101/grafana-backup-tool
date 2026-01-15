@@ -25,12 +25,11 @@ def main(args, settings, file_path):
 
         result = search_contact_points(grafana_url, http_post_headers, verify_ssl, client_cert, debug)
         status_code = result[0]
-        existing_contact_points = []
+        existing_contact_points = set()
         if status_code == 200:
             # Successfully received list of contact points.
-            # Append contact points to list of existing contact points
-            for ecp in result[1]:
-                existing_contact_points.append(ecp["uid"])
+            # Add contact points to set of existing contact points
+            existing_contact_points = {ecp["uid"] for ecp in result[1]}
 
         contact_points = json.loads(data)
         for cp in contact_points:
