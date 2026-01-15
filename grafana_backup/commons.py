@@ -31,10 +31,12 @@ def load_config(path=None):
     return config
 
 
+DB_UID_PATTERN = re.compile(r"^db/|^uid/")
+
+
 def save_json(file_name, data, folder_path, extension, pretty_print):
-    pattern = "^db/|^uid/"
-    if re.match(pattern, file_name):
-        file_name = re.sub(pattern, '', file_name)
+    if DB_UID_PATTERN.match(file_name):
+        file_name = DB_UID_PATTERN.sub('', file_name)
 
     file_path = folder_path + '/' + file_name + '.' + extension
     with open(u"{0}".format(file_path), 'w') as f:
