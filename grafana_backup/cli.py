@@ -13,7 +13,7 @@ docstring = """
 
 Usage:
     grafana-backup save [--config=<filename>] [--components=<>] [--no-archive]
-    grafana-backup restore [--config=<filename>] [--components=<>] <archive_file>
+    grafana-backup restore [--config=<filename>] [--components=<>] [--threads=<threads>] <archive_file>
     grafana-backup delete [--config=<filename>] [--components=<>]
     grafana-backup tools [-h | --help] [--config=<filename>] [<optional-command>] [<optional-argument>]
     grafana-backup [--config=<filename>]
@@ -26,6 +26,7 @@ Options:
     --config=<filename>                     Override default configuration path
     --components=<>                         Comma separated list of individual components to backup (all by default); dashboard-versions can only be saved not restored.
                                             <folders,folder_permissions,dashboards,datasources,alert-channels,alert-rules,organizations,users,snapshots,dashboard-versions,annotations,library_elements,teams,team_members>
+    --threads=<threads>                     Number of threads to use for parallel restore.
 
     --no-archive                            Skip archive creation and do not delete unarchived files
                                             (used for troubleshooting purposes)
