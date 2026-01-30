@@ -1,6 +1,6 @@
 import os
 from grafana_backup.dashboardApi import search_dashboard, get_dashboard
-from grafana_backup.commons import to_python2_and_3_compatible_string, print_horizontal_line, save_json
+from grafana_backup.commons import print_horizontal_line, save_json
 
 
 def main(args, settings):
@@ -39,8 +39,13 @@ def get_all_dashboards_in_grafana(page, limit, grafana_url, http_get_headers, ve
     if status == 200:
         dashboards = content
         print("There are {0} dashboards:".format(len(dashboards)))
-        for board in dashboards:
-            print('name: {0}'.format(to_python2_and_3_compatible_string(board['title'])))
+
+        # Optimized: Batch prints to improve performance
+        chunk_size = 1000
+        for i in range(0, len(dashboards), chunk_size):
+            chunk = dashboards[i:i + chunk_size]
+            print('\n'.join('name: {0}'.format(board['title']) for board in chunk))
+
         return dashboards
     else:
         print("get dashboards failed, status: {0}, msg: {1}".format(status, content))
@@ -66,13 +71,13 @@ def get_individual_dashboard_setting_and_save(dashboards, folder_path, log_file,
                 if status == 200:
                     file_name = build_filename(board_uri, content, uid_support, slug_suffix)
                     save_dashboard_setting(
-                        to_python2_and_3_compatible_string(board['title']),
+                        board['title'],
                         file_name,
                         content,
                         folder_path,
                         pretty_print
                     )
-                    f.write('{0}\t{1}\n'.format(board_uri, to_python2_and_3_compatible_string(board['title'])))
+                    f.write('{0}\t{1}\n'.format(board_uri, board['title']))
 
 
 def build_filename(board_uri, content, uid_support, slug_suffix):
